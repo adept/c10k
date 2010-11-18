@@ -223,9 +223,9 @@ dispatchS srv sock inc dec = do
 
 dispatchH :: C10kServerH -> Socket -> Dispatch
 dispatchH srv sock inc dec = do
-    (hdl,tcpi) <- T.accept sock
+    (hdl,tcpi,sock') <- T.accept sock
     inc
-    forkIO $ srv hdl tcpi `finally` (dec >> hClose hdl)
+    forkIO $ srv hdl tcpi `finally` (dec >> shutdown sock' ShutdownBoth >> hClose hdl)
     return ()
 
 ----------------------------------------------------------------

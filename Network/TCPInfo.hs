@@ -26,7 +26,7 @@ data TCPInfo = TCPInfo {
 {-|
   Yet another accept() to return both 'Handle' and 'TCPInfo'.
 -}
-accept :: Socket -> IO (Handle, TCPInfo)
+accept :: Socket -> IO (Handle, TCPInfo, Socket)
 accept sock = do
     (sock', sockaddr) <- Network.Socket.accept sock
     let getInfo = getNameInfo [NI_NUMERICHOST, NI_NUMERICSERV] True True
@@ -37,7 +37,7 @@ accept sock = do
                        , myPort = vMyPort
                        , peerAddr = strip vPeerAddr
                        , peerPort = vPeerPort}
-    return (hdl, info)
+    return (hdl, info, sock')
   where
     strip x
       | "::ffff:" `isPrefixOf` x = drop 7 x
